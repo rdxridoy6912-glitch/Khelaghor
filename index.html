@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>খেলাঘর PRO</title>
+  
+  <!-- React & ReactDOM CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  
+  <!-- Babel Compiler for JSX -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <style>
+    body {
+      background-color: #0f172a;
+      color: #f8fafc;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    function App() {
+      const [walletOpen, setWalletOpen] = useState(false);
+      const [authOpen, setAuthOpen] = useState(false);
+      const [activeTab, setActiveTab] = useState('lobby');
+      const [balance, setBalance] = useState(500);
+      
+      // Admin States
+      const [isAdmin, setIsAdmin] = useState(false);
+      const [phoneInput, setPhoneInput] = useState('');
+      const [passInput, setPassInput] = useState('');
+
+      useEffect(() => {
+        if (window.lucide) {
+          window.lucide.createIcons();
+        }
+      }, [activeTab, walletOpen, authOpen, isAdmin]);
+
+      const handleLogin = (e) => {
+        e.preventDefault();
+        // Secret Admin Credentials check
+        if (phoneInput === 'admin' && passInput === '1234') {
+          setIsAdmin(true);
+          setAuthOpen(false);
+          alert('স্বাগতম বস! আপনি অ্যাডমিন প্যানেলে প্রবেশ করেছেন।');
+        } else {
+          setIsAdmin(false);
+          setAuthOpen(false);
+          alert('সফলভাবে ইউজার হিসেবে লগইন হয়েছে!');
+        }
+      };
+
+      return (
+        <div className="min-h-screen flex flex-col">
+          <header className="bg-slate-900 border-b border-slate-800 p-4 flex justify-between items-center sticky top-0 z-50">
+            <div className="flex items-center gap-2">
+              <h1 className="text-2xl font-bold text-amber-400 tracking-wider">খেলাঘর PRO</h1>
+              {isAdmin && <span className="bg-rose-600 text-white text-xs px-2 py-0.5 rounded font-bold">ADMIN</span>}
+            </div>
+            <div className="flex items-center gap-3">
+              <button 
+                onClick={() => setWalletOpen(true)}
+                className="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg text-sm font-semibold flex items-center gap-1.5 shadow"
+              >
+                <span>৳ {balance}</span>
+              </button>
+              {isAdmin ? (
+                <button 
+                  onClick={() => setIsAdmin(false)}
+                  className="bg-rose-600 hover:bg-rose-500 text-white px-3 py-1.5 rounded-lg text-sm font-semibold shadow"
+                >
+                  লগআউট (অ্যাডমিন)
+                </button>
+              ) : (
+                <button 
+                  onClick={() => setAuthOpen(true)}
+                  className="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg text-sm font-semibold shadow"
+                >
+                  লগইন / রেজিস্টার
+                </button>
+              )}
+            </div>
+          </header>
+
+          <main className="flex-1 p-4 max-w-4xl mx-auto w-full">
+            {isAdmin ? (
+              /* --- ADMIN PANEL VIEW --- */
+              <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 shadow-xl">
+                <div className="flex justify-between items-center mb-6 border-b border-slate-700 pb-4">
+                  <h2 className="text-2xl font-bold text-rose-400">🛡️ অ্যাডমিন কন্ট্রোল প্যানেল</h2>
+                  <span className="text-sm text-slate-400">স্ট্যাটাস: ফুল এক্সেস</span>
+                </div>
+                
+                <div className="grid md:grid-cols-3 gap-4 mb-6">
+                  <div className="bg-slate-900 p-4 rounded-lg border border-slate-700">
+                    <p className="text-slate-400 text-sm">মোট ইউজার</p>
+                    <h3 className="text-2xl font-bold text-emerald-400 mt-1">১,২৪5 জন</h3>
+                  </div>
+                  <div className="bg-slate-900 p-4 rounded-lg border border-slate-700">
+                    <p className="text-slate-400 text-sm">চলat টুর্নামেন্ট</p>
+                    <h3 className="text-2xl font-bold text-amber-400 mt-1">৮ টি</h3>
+                  </div>
+                  <div className="bg-slate-900 p-4 rounded-lg border border-slate-700">
+                    <p className="text-slate-400 text-sm">আজকের ডিপোজিট</p>
+                    <h3 className="text-2xl font-bold text-indigo-400 mt-1">৳ ১২,৫০০</h3>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold text-slate-200">কুইক কন্ট্রোলস</h3>
+                  <div className="flex flex-wrap gap-3">
+                    <button 
+                      onClick={() => setBalance(balance + 500)}
+                      className="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg text-sm font-medium"
+                    >
+                      ইউজারের ব্যালেন্স যোগ করুন (+৳৫০০)
+                    </button>
+                    <button 
+                      onClick={() => alert('নতুন টুর্নামেন্ট সফলভাবে ক্রিয়েট হয়েছে!')}
+                      className="bg-amber-600 hover:bg-amber-500 text-slate-950 px-4 py-2 rounded-lg text-sm font-bold"
+                    >
+                      নতুন টুর্নামেন্ট যুক্ত করুন
+                    </button>
+                    <button 
+                      onClick={() => alert('সকল ক্যাশআউট রিকোয়েস্ট রিফ্রেশ করা হয়েছে!')}
+                      className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-sm font-medium"
+                    >
+                      উইথড্র রিকোয়েস্ট চেক করুন
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              /* --- NORMAL PLAYER LOBBY VIEW --- */
+              <div>
+                <div className="flex gap-2 mb-6 border-b border-slate-800 pb-2">
+                  <button 
+                    onClick={() => setActiveTab('lobby')} 
+                    className={`px-4 py-2 rounded-lg font-medium text-sm transition ${activeTab === 'lobby' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:bg-slate-800'}`}
+                  >
+                    লবি (Lobby)
+                  </button>
+                  <button 
+                    onClick={() => setActiveTab('ludo')} 
+                    className={`px-4 py-2 rounded-lg font-medium text-sm transition ${activeTab === 'ludo' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:bg-slate-800'}`}
+                  >
+                    লুডু গেম
+                  </button>
+                  <button 
+                    onClick={() => setActiveTab('racing')} 
+                    className={`px-4 py-2 rounded-lg font-medium text-sm transition ${activeTab === 'racing' ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:bg-slate-800'}`}
+                  >
+                    কার রেসিং
+                  </button>
+                </div>
+
+                {activeTab === 'lobby' && (
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="bg-slate-800 border border-slate-700 rounded-xl p-5 shadow-lg flex flex-col justify-between">
+                      <div>
+                        <span className="bg-amber-500/20 text-amber-400 text-xs px-2.5 py-1 rounded-full font-semibold">লাইভ টুর্নামেন্ট</span>
+                        <h3 className="text-xl font-bold mt-2">লুডু কিং মাস্টার্স</h3>
+                        <p className="text-slate-400 text-sm mt-1">এন্ট্রি ফি: ৳৫০ | বিজয়ী পুরষ্কার: ৳৯০</p>
+                      </div>
+                      <button 
+                        onClick={() => setActiveTab('ludo')} 
+                        className="mt-4 w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-2.5 rounded-lg transition"
+                      >
+                        খেলুন
+                      </button>
+                    </div>
+
+                    <div className="bg-slate-800 border border-slate-700 rounded-xl p-5 shadow-lg flex flex-col justify-between">
+                      <div>
+                        <span className="bg-indigo-500/20 text-indigo-400 text-xs px-2.5 py-1 rounded-full font-semibold">স্পিড চ্যালেঞ্জ</span>
+                        <h3 className="text-xl font-bold mt-2">আল্টিমেট কার রেসিং</h3>
+                        <p className="text-slate-400 text-sm mt-1">এন্ট্রি ফি: ৳১০০ | বিজয়ী পুরষ্কার: ৳১৮০</p>
+                      </div>
+                      <button 
+                        onClick={() => setActiveTab('racing')} 
+                        className="mt-4 w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 rounded-lg transition"
+                      >
+                        খেলুন
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === 'ludo' && (
+                  <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center">
+                    <h2 className="text-2xl font-bold text-amber-400 mb-2">🎲 লুডু গেম বোর্ড</h2>
+                    <p className="text-slate-400 mb-6">ম্যাচ চালু হতে প্রস্তুত...</p>
+                    <div className="w-48 h-48 bg-slate-900 border-2 border-dashed border-slate-700 mx-auto rounded-xl flex items-center justify-center text-4xl mb-6">
+                      🎲
+                    </div>
+                    <button 
+                      onClick={() => setActiveTab('lobby')}
+                      className="bg-slate-700 hover:bg-slate-600 px-5 py-2 rounded-lg text-sm font-semibold"
+                    >
+                      লবিতে ফিরুন
+                    </button>
+                  </div>
+                )}
+
+                {activeTab === 'racing' && (
+                  <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 text-center">
+                    <h2 className="text-2xl font-bold text-indigo-400 mb-2">🏎️ কার রেসিং ট্র্যাক</h2>
+                    <p className="text-slate-400 mb-6">রেস স্টার্টের অপেক্ষায়...</p>
+                    <div className="w-48 h-48 bg-slate-900 border-2 border-dashed border-slate-700 mx-auto rounded-xl flex items-center justify-center text-4xl mb-6">
+                      🏎️
+                    </div>
+                    <button 
+                      onClick={() => setActiveTab('lobby')}
+                      className="bg-slate-700 hover:bg-slate-600 px-5 py-2 rounded-lg text-sm font-semibold"
+                    >
+                      লবিতে ফিরুন
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </main>
+
+          {walletOpen && (
+            <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
+              <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 max-w-sm w-full relative">
+                <h3 className="text-xl font-bold mb-4 text-emerald-400">ওয়ালেট ম্যানেজমেন্ট</h3>
+                <p className="text-sm text-slate-300 mb-4">বর্তমান ব্যালেন্স: <strong>৳ {balance}</strong></p>
+                <div className="space-y-3">
+                  <button 
+                    onClick={() => setBalance(balance + 100)} 
+                    className="w-full bg-emerald-600 hover:bg-emerald-500 py-2 rounded-lg font-semibold text-sm"
+                  >
+                    + ৳১০০ ডিপোজিট করুন
+                  </button>
+                  <button 
+                    onClick={() => setWalletOpen(false)} 
+                    className="w-full bg-slate-700 hover:bg-slate-600 py-2 rounded-lg text-sm"
+                  >
+                    বন্ধ করুন
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {authOpen && (
+            <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
+              <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 max-w-sm w-full relative">
+                <h3 className="text-xl font-bold mb-4 text-indigo-400">অ্যাকাউন্ট লগইন</h3>
+                <form onSubmit={handleLogin}>
+                  <input 
+                    type="text" 
+                    placeholder="মোবাইল নম্বর (অ্যাডমিনের জন্য admin দিন)" 
+                    value={phoneInput}
+                    onChange={(e) => setPhoneInput(e.target.value)}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 mb-3 text-sm focus:outline-none focus:border-indigo-500 text-white"
+                    required
+                  />
+                  <input 
+                    type="password" 
+                    placeholder="পাসওয়ার্ড (অ্যাডমিনের জন্য 1234 দিন)" 
+                    value={passInput}
+                    onChange={(e) => setPassInput(e.target.value)}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 mb-4 text-sm focus:outline-none focus:border-indigo-500 text-white"
+                    required
+                  />
+                  <button 
+                    type="submit" 
+                    className="w-full bg-indigo-600 hover:bg-indigo-500 py-2.5 rounded-lg font-semibold text-sm mb-2 text-white"
+                  >
+                    প্রবেশ করুন
+                  </button>
+                </form>
+                <button 
+                  onClick={() => setAuthOpen(false)} 
+                  className="w-full bg-slate-700 hover:bg-slate-600 py-2 rounded-lg text-sm text-white"
+                >
+                  বাতিল
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
